@@ -21,7 +21,7 @@
  * @since         CakePHP(tm) v 0.10.8.2117
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-
+require_once '../Lib/google-api-php-client/autoload.php';
 // Setup a 'default' cache configuration for use in the application.
 Cache::config('default', array('engine' => 'File'));
 
@@ -112,3 +112,6 @@ CakeLog::config('error', array(
 	'types' => array('warning', 'error', 'critical', 'alert', 'emergency'),
 	'file' => 'error',
 ));
+
+define('GOOGLE_CLIENT_ID', '928708367333-ivarjs5hl76odbfgnbmv9m9c2aid5kjh.apps.googleusercontent.com');
+define('GOOGLE_CLIENT_SECRET', 'H1WQja8EqOklcNHi4GcUPaBz');

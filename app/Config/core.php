@@ -384,6 +384,3 @@ Cache::config('_cake_model_', array(
 	'serialize' => ($engine === 'File'),
 	'duration' => $duration
 ));
-
-define('GOOGLE_CLIENT_ID', '    928708367333-0f4kfbontiequ3vutsjt819kltb2irik.apps.googleusercontent.com');
-define('GOOGLE_CLIENT_SECRET', '     _-WIb_h4GD0_hN21Mkrm1WRg ');
