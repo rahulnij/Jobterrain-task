@@ -6,11 +6,23 @@ App::uses('AppController', 'Controller');
 
 class PatientsController extends AppController
 {
-    public $helpers = array('Html', 'Form', 'Session','Paginator');
-	public $components = array('Session','Paginator');
     public $uses = array('Patient', 'Appointment');
+    
+    public function isAuthoried() {
+        parent::isAuthoried();
+        $user = $this->Auth->user();
+        $userType = strtolower($user['User']['user_type']);
+        if ($userType != 'patient') {
+            return false;
+        }
+        
+        return true;
+    }
+
+
     public function index()
 	{
+        
         $this->Appointment->bindModel(
                  array('belongsTo' => array(
                 'Doctor' => array(
