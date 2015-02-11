@@ -1,7 +1,7 @@
 <?php
 
 App::uses('AppModel', 'Model');
-class UserModel extends AppModel {
+class User extends AppModel {
     public $name = 'User';
    
 }

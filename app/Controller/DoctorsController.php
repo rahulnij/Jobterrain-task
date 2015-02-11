@@ -4,29 +4,29 @@
 App::uses('AppController', 'Controller');
 
 
-class PatientsController extends AppController
+class DoctorsController extends AppController
 {
     public $components = array('GoogleApi');
-    public $uses = array('Patient', 'Appointment', 'Doctor');
+    public $uses = array('Doctor', 'Appointment');
+    
     
     public function isAuthoried() {
-        
+        parent::isAuthoried();
         $user = $this->Auth->user();
         $userType = strtolower($user['User']['user_type']);
-        if ($userType != 'patient') {
+        if ($userType != 'doctor') {
             return false;
         }
         
-        return false;
+        return true;
     }
 
-
+    
     public function index()
 	{
-        
         $this->Appointment->bindModel(
                  array('belongsTo' => array(
-               'User' => array(
+                 'User' => array(
                     'className' => 'User',
                     'foreignKey' => 'patient_id'
                  )
@@ -35,7 +35,6 @@ class PatientsController extends AppController
         
 		$user = $this->Auth->user();
         $userId = $user['User']['id'];
-        
         $paginate = array(
             'limit' => 10,
             'order' => array('Appointment.appointmentTime' => 'desc'),
@@ -44,33 +43,10 @@ class PatientsController extends AppController
         $this->Paginator->settings = $paginate;
 
 		$this->set('appointments',$this->Paginator->paginate('Appointment',
-        array('Appointment.patient_id'=>$userId)
+        array('Appointment.doctor_id'=>$userId)
                 ));
 	}
 
-
-	public function add()
-	{
-		if($this->request->is('post')) {
-            
-			$this->Appointment->create();
-            $currentUser = $this->Auth->user();
-            $data = $this->request->data;
-            
-            $data['Appointment']['patient_id'] = $currentUser['User']['id'];
-            
-			if($this->Appointment->save($data)) {
-				$this->Session->setFlash(__('Your appointment has been saved.'));
-                return $this->redirect(array('action' => 'index'));
-			} 
-			$this->Session->setFlash(__('Unable to add appointment'));
-		}
-        
-        $doctorList = $this->Doctor->find('list', array('fields' => array('Doctor.user_id', 'Doctor.first_name')));
-        $this->set('doctorList', $doctorList);
-		
-		
-	}
 
 	public function edit($id = null)
 	{
@@ -88,8 +64,6 @@ class PatientsController extends AppController
 	    if ($this->request->is(array('post', 'put'))) {
 	        
 	        $this->Appointment->id = $id;
-            $this->request->data['Appointment']['id'] = $id;
-            $this->request->data['Appointment']['status'] = 'Pending';
 	        if ($this->Appointment->save($this->request->data)) {
 	            $this->Session->setFlash(__('Your appointment has been updated.'));
 	            return $this->redirect(array('action' => 'index'));
@@ -100,25 +74,8 @@ class PatientsController extends AppController
 	    if (!$this->request->data) {
 	        $this->request->data = $appointment;
 	    }
-        
-        $doctorList = $this->Doctor->find('list', array('fields' => array('Doctor.user_id', 'Doctor.first_name')));
-        $this->set('doctorList', $doctorList);
-        
 	    $this->render('edit');
 
-	}
-
-	public function delete($id) {
-	    if ($this->request->is('get')) {
-	        throw new MethodNotAllowedException();
-	    }
-
-	    if ($this->Appointment->delete($id)) {
-	        $this->Session->setFlash(
-	            __('The appoinment with id: %s has been deleted.', h($id))
-	        );
-	        return $this->redirect(array('action' => 'index'));
-	    }
 	}
 
 }

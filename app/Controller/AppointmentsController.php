@@ -43,7 +43,7 @@ class PatientsController extends AppController
 			} 
 			$this->Session->setFlash(__('Unable to add appointment'));
 		}
-		//$this->Session->setFlash(__('hi<br/>'), 'flash_custom', array('flashVar'=> 'hello','test'));
+		
 		
 	}
 

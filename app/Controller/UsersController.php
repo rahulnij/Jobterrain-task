@@ -6,10 +6,10 @@ App::uses('AppController', 'Controller');
 
 class UsersController extends AppController
 {
-    
+    public $uses = array('User', 'Patient', 'Doctor');
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('index', 'nextStep', 'login','storeToken');
+        $this->Auth->allow('index', 'login','storeToken');
     }
     
     public function index()
@@ -49,6 +49,11 @@ class UsersController extends AppController
     
     public function storeToken()
     {
+        $response = array(
+            'error' => false,
+            'msg' => 'Unable to login.'
+        );
+        $this->autoRender = false;
         if ($this->request->is('post')) {
             $code = $this->request->data['code'];
             //echo $accessToken = $this->request->data['access_token'];exit;
@@ -77,10 +82,9 @@ class UsersController extends AppController
                'google_id' => $googleId,
                 'first_name' => $googleFName,
                 'last_name' => $googleLName,
-                'access_token' => $accessTokenObj->access_token,
+                'access_token' => $accessToken,
                 'refresh_token' => $refreshToken,
-                'token_created' => $accessTokenObj->created
-
+                
             );
             $user = $this->User->findByGoogleId($googleId);
             
@@ -94,34 +98,57 @@ class UsersController extends AppController
             $this->request->data['User'] = $user;
             $this->Auth->login($this->request->data['User']);
             
-            echo 'true';
-            exit;
+            $response['error'] = true;
+            
         }
-
+        return json_encode($response);
     }
 
     
     public function nextStep()
     {
-       
+        
         if ($this->request->is('post')) {
-            $user = $this->Session->read('user');
-            $user['User']['user_type'] = $this->request->data['user_type'];
+            $user = $this->Auth->user();
+            $userType = $this->request->data['user_type'];
+            var_dump($userType);
+            $userId = $user['User']['id'];
+            var_dump($userId);
+            $firstName = $user['User']['first_name'];
+            $lastName = $user['User']['last_name'];
+            
+            $user['User']['user_type'] = $userType;
+            
             $this->Session->write('user', $user);
-            $this->User->id = $user['User']['id'];
+            $this->User->id = $userId;
             $this->User->save($user['User']);
             $this->request->data['User'] = $user;
-             
+            
+            // adding patient/doctor depend on user type
+            $data = array(
+                'user_id' => $userId,
+                'first_name' => $firstName,
+                'last_name' => $lastName
+            );
+            switch (strtolower($userType)) {
+                case 'patient': $this->Patient->save($data);
+                                break;
+                case 'doctor' : $this->Doctor->save($data);
+                                break;
+            }
+            
+            
             if ($this->Auth->login($this->request->data['User'])) {
-                $this->redirect($this->Auth->redirect());
                 $this->Session->setFlash('You are successfully logged in');
+                return $this->redirect($this->Auth->redirect());
+            
             } else {
                 $this->Session->setFlash('Failed to login');
             }
-            exit;
-           // $this->redirect(array('controller'=> 'users', 'action'=> 'index'));
+            
             
         }
+        
         
     }
 

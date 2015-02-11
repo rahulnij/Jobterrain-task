@@ -38,7 +38,8 @@ class AppController extends Controller {
         'Paginator',
         'Auth' => array(
             'loginRedirect' => array('controller'=> 'users', 'action' => 'login'),
-            'logoutRedirect' => array('controller'=> 'users', 'action' => 'index')
+            'logoutRedirect' => array('controller'=> 'users', 'action' => 'index'),
+            'authError' => 'Not allow to access that page.'
         )
         
         );
@@ -48,6 +49,11 @@ class AppController extends Controller {
         return true;
     }
     
+    public function beforeFilter() {
+        parent::beforeFilter();
+        
+        $this->set('login', $this->Auth->login());
+    }
     
   
 }
