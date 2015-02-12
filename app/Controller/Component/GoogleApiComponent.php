@@ -20,10 +20,17 @@ class GoogleApiComponent extends Component
         //$googleClient->s
     }
     
+    private function getCalandarService()
+    {
+        // have to change to get all time one instance instead of creating every time
+       $this->client->addScope('https://www.googleapis.com/auth/calendar');
+       $service = new Google_Service_Calendar($this->client);
+       return $service;
+    }
     public function createCalandar(Array $data)
     {
-        $this->client->addScope('https://www.googleapis.com/auth/calendar');
-        $service = new Google_Service_Calendar($this->client);
+        
+        $service = $this->getCalandarService();
         $accessToken = $data['accessToken'];
         $this->client->setAccessToken($accessToken);
         
@@ -40,5 +47,31 @@ class GoogleApiComponent extends Component
         return true;
     }
     
+    public function createEvent($data)
+    {
+    
+        $event = new Google_Service_Calendar_Event();
+        
+        $event->setSummary('Appointment');
+        $event->setLocation('Somewhere');
+        $start = new Google_Service_Calendar_EventDateTime();
+        $start->setDateTime('2015-06-03T10:00:00.000-07:00');
+        $event->setStart($start);
+        $end = new Google_Service_Calendar_EventDateTime();
+        $end->setDateTime('2015-06-03T10:25:00.000-07:00');
+        $event->setEnd($end);
+        $attendee1 = new Google_Service_Calendar_EventAttendee();
+        $attendee1->setEmail('attendeeEmail');
+        
+        $attendees = array($attendee1,
+                          
+                          );
+        $event->attendees = $attendees;
+        $service = $this->getCalandarService();
+        $createdEvent = $service->events->insert('primary', $event);
+
+        return $createdEvent->getId();
+        
+    }
     
 }
