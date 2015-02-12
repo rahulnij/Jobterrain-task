@@ -1,15 +1,16 @@
  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-  <script src="https://apis.google.com/js/client:platform.js?onload=render" async defer></script>
+  <script src="https://apis.google.com/js/client:platform.js?parsetags=explicit" async defer></script>
   <script>
   function render() {
-    gapi.signin.render('customBtn', {
+    gapi.auth.signIn({
       'callback': 'googleCallBack',
       'accesstype': 'offline',
       'redirecturi':'postmessage',
       'clientid': '<?php echo GOOGLE_CLIENT_ID?>',
       'cookiepolicy': 'single_host_origin',
       'requestvisibleactions': 'http://schema.org/AddAction',
-      'scope': 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/calendar'
+      'scope': 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/calendar',
+      //'approvalprompt': 'force'
     });
   }
   </script>
@@ -50,7 +51,7 @@
   </style>
   <!-- In the callback, you would hide the gSignInWrapper element on a
   successful sign in -->
-  <div id="gSignInWrapper">
+  <div id="gSignInWrapper" onclick="render()">
     <span class="label">Sign in with:</span>
     <div id="customBtn" class="customGPlusSignIn">
       <span class="icon"></span>

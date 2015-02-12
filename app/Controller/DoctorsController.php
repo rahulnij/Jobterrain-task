@@ -7,13 +7,13 @@ App::uses('AppController', 'Controller');
 class DoctorsController extends AppController
 {
     public $components = array('GoogleApi');
-    public $uses = array('Doctor', 'Appointment');
+    public $uses = array('Doctor', 'Appointment','User');
     
     
-    public function isAuthoried() {
-        parent::isAuthoried();
+    public function isAuthorized() {
+        parent::isAuthorized();
         $user = $this->Auth->user();
-        $userType = strtolower($user['User']['user_type']);
+        $userType = strtolower($user['user_type']);
         if ($userType != 'doctor') {
             return false;
         }
@@ -34,7 +34,7 @@ class DoctorsController extends AppController
         ));
         
 		$user = $this->Auth->user();
-        $userId = $user['User']['id'];
+        $userId = $user['id'];
         $paginate = array(
             'limit' => 10,
             'order' => array('Appointment.appointmentTime' => 'desc'),
@@ -65,6 +65,9 @@ class DoctorsController extends AppController
 	        
 	        $this->Appointment->id = $id;
 	        if ($this->Appointment->save($this->request->data)) {
+                if ($this->request->data['Appointment']['status'] == 'Approved') {
+                    $this->googlEvent($id);
+                }
 	            $this->Session->setFlash(__('Your appointment has been updated.'));
 	            return $this->redirect(array('action' => 'index'));
 	        }
@@ -78,4 +81,30 @@ class DoctorsController extends AppController
 
 	}
 
+    /**
+     *  create event on user calendar
+     */
+    public function googleEvent($appointmentId)
+    {
+        $calandarId = $this->Auth->user('calandar_id');
+        
+        // create calandar not exist both in user account here or on google.
+        if (is_null($calandarId) || $this->GoogleApi->isCalendarExist()) {
+            $data['summary'] = 'Job terrain task';
+            $data['accessToken'] = $this->Auth->user('access_token');
+            $calandarId = $this->GoogleApi->createCalandar($data);
+            // update current user calandar id
+            $user = $this->Auth->user();
+            $user['calandar_id'] = $calandarId;
+            $this->User->save($user);
+            // udating current auth data
+            $this->Auth->user($user);
+        }
+        
+     
+     
+        //$googleClient->s
+    }
+    
+    
 }

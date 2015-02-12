@@ -19,16 +19,17 @@ class UsersController extends AppController
     
     public function login()
     {
-         
+        
         if ($this->Auth->login()) {
             $user = $this->Auth->user();
             
-            $userType = strtolower($user['User']['user_type']);
+            $userType = strtolower($user['user_type']);
             if (in_array($userType, array('patient', 'doctor'))) {
                 switch ($userType) {
-                    case 'patient': $this->redirect(array('controller'=> 'patients', 'action' => 'index'));
+                    case 'patient': //var_dump(array('controller'=> 'patients', 'action' => 'index'),$this->Auth->user());exit;
+                                   return $this->redirect(array('controller'=> 'patients', 'action' => 'index'));
                                     break;
-                    case 'doctor' : $this->redirect(array('controller'=> 'doctors', 'action' => 'index'));
+                    case 'doctor' : return $this->redirect(array('controller'=> 'doctors', 'action' => 'index'));
                                     break;
                 }
                 
@@ -43,10 +44,14 @@ class UsersController extends AppController
     
     public function logout()
     {   
-        //$this->Session->destroy();
         $this->redirect($this->Auth->logout());
     }
     
+    /**
+     * create user and login to site from posted google authenticate code
+     * 
+     * @return json object {error, msg}
+     */
     public function storeToken()
     {
         $response = array(
@@ -65,7 +70,7 @@ class UsersController extends AppController
             $client->authenticate($code);
 
             $accessToken = $client->getAccessToken();
-            $accessTokenObj = json_decode($accessToken);
+            //$accessTokenObj = json_decode($accessToken);
                     
             $plus = new Google_Service_Plus($client);
             $client->setAccessToken($accessToken);
@@ -95,7 +100,7 @@ class UsersController extends AppController
                 
             } 
             
-            $this->request->data['User'] = $user;
+            $this->request->data = $user;
             $this->Auth->login($this->request->data['User']);
             
             $response['error'] = true;
@@ -109,19 +114,16 @@ class UsersController extends AppController
     {
         
         if ($this->request->is('post')) {
+            
             $user = $this->Auth->user();
             $userType = $this->request->data['user_type'];
-            var_dump($userType);
-            $userId = $user['User']['id'];
-            var_dump($userId);
-            $firstName = $user['User']['first_name'];
-            $lastName = $user['User']['last_name'];
-            
-            $user['User']['user_type'] = $userType;
-            
+            $userId = $user['id'];
+            $firstName = $user['first_name'];
+            $lastName = $user['last_name'];
+            $user['user_type'] = $userType;
             $this->Session->write('user', $user);
             $this->User->id = $userId;
-            $this->User->save($user['User']);
+            $this->User->save($user);
             $this->request->data['User'] = $user;
             
             // adding patient/doctor depend on user type
@@ -140,7 +142,7 @@ class UsersController extends AppController
             
             if ($this->Auth->login($this->request->data['User'])) {
                 $this->Session->setFlash('You are successfully logged in');
-                return $this->redirect($this->Auth->redirect());
+                return $this->redirect($this->Auth->redirectUrl());
             
             } else {
                 $this->Session->setFlash('Failed to login');

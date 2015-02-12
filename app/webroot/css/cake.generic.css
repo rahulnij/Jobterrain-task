@@ -23,10 +23,10 @@
 
 /** General Style Info **/
 body {
-	background: #003d4c;
+	background: #EDEDED;
 	color: #fff;
-	font-family:'lucida grande',verdana,helvetica,arial,sans-serif;
-	font-size:90%;
+	font-family:Arial,sans-serif;
+	font-size:12px;
 	margin: 0;
 }
 a {
@@ -77,32 +77,49 @@ p {
 	text-align: left;
 }
 
-#header{
-	padding: 10px 20px;
-}
+
 #header h1 {
-	line-height:20px;
-	background: #003d4c url('../img/cake.icon.png') no-repeat left;
-	color: #fff;
-	padding: 0px 30px;
+	line-height: 20px;
+color: #fff;
+padding: 10px 30px;
+float: left;
+font-size: 25px;
+background: transparent;
+margin: 0;
 }
+
 #header h1 a {
-	color: #fff;
-	background: #003d4c;
+	color: #333;
+	
 	font-weight: normal;
 	text-decoration: none;
 }
-#header h1 a:hover {
-	color: #fff;
-	background: #003d4c;
-	text-decoration: underline;
-}
+#gSignInWrapper{display: block;
+max-width: 320px;
+margin: 250px auto 0;
+text-align: center;
+border: 1px solid #e7e7e7;
+padding: 20px;
+border-radius: 7px;}
+#gSignInWrapper .label{font: 16px arial;
+color: #333;
+display: inline-block;
+height: 34px;
+line-height: 31px;
+vertical-align: top;}
+#gSignInWrapper .customGPlusSignIn{cursor:pointer;}
+.lgot{float: right;
+font: 14px Arial;
+color: #666 !important;
+margin: 14px 30px 0 0;
+text-decoration: none;}
 #content{
 	background: #fff;
-	clear: both;
-	color: #333;
-	padding: 10px 20px 40px 20px;
-	overflow: auto;
+clear: both;
+color: #333;
+padding: 10px 30px;
+overflow: auto;
+min-height: 690px;
 }
 #footer {
 	clear: both;
@@ -742,3 +759,32 @@ pre {
 #url-rewriting-warning {
 	display:none;
 }
+
+
+#UserNextStepForm, #AppointmentAddForm,#AppointmentEditForm{width: 100%;margin: 60px auto;max-width: 500px;display: block;border: 1px solid #e7e7e7;padding: 20px;}
+#UserNextStepForm label,
+#UserNextStepForm input[type="radio"],
+#AppointmentAddForm label,
+#AppointmentAddForm select,
+#AppointmentAddForm input[type="text"],
+#AppointmentEditForm label,
+#AppointmentEditForm select
+{font: 14px Arial;color: #666;float: left;display: inline-block;clear: none;
+width: auto;padding: 3px;}
+#AppointmentAddForm label,#UserNextStepForm label,#AppointmentEditForm label{padding: 5px;}
+#AppointmentAddForm label{width: 40%;}
+#AppointmentAddForm select,#AppointmentEditForm select{width: 35%;padding: 4px;}
+#AppointmentAddForm .input{display: inline-block;margin-top: 0;width: 100%;padding: 0;}
+.main-lbl{text-transform: uppercase;color: #000 !important;width: 12%;}
+#UserNextStepForm .submit,#AppointmentAddForm .submit, #AppointmentEditForm .submit{text-align: right;margin: 0;}
+#AppointmentAddForm input[type="submit"]{margin-top: 15px;}
+#UserNextStepForm input[type="submit"],#AppointmentAddForm input[type="submit"],#AppointmentEditForm input[type="submit"]{background: #ededed;color: #333;border: 1px solid #B8B8B8;text-shadow: none;font: 12px Arial;letter-spacing: 1px;
+}
+#UserNextStepForm input[type="submit"]:hover,#AppointmentAddForm input[type="submit"]:hover,#AppointmentEditForm input[type="submit"]:hover{background: #333;color: #fff;}
+#content h1 {background: #fff;color: #003d4c;font-size: 18px;border-bottom: 1px solid #ccc;padding: 5px 0;}
+.pgintn span{font: 12px Arial;border:1px solid transparent;color: #333;background: #e7e7e7;padding: 2px 5px;border-radius: 3px;display: inline-block;text-align: center;box-shadow: 0 0 1px #333;float: left;}
+.pgintn span + span{margin-left: 5px;}
+.pgintn span a{text-decoration: none;font: 12px Arial;color:#555;}
+.pgintn span.current{color: #000;border: 1px solid #000;}
+.pgintn span.disabled{pointer-events: none;cursor: not-allowed;}
+.pgintn .fr{float: right;}

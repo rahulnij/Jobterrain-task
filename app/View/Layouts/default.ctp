@@ -34,7 +34,7 @@ $siteDescription = 'Jobterrain task';
 		echo $this->fetch('css');
 		echo $this->fetch('script');
 	?>
-    
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
 </head>
 <body>
@@ -45,7 +45,7 @@ $siteDescription = 'Jobterrain task';
             
             if ($login == true) {
                 
-                echo $this->Html->link('Logout', array('controller'=>'users','action'=>'logout'));
+                echo $this->Html->link('<i class="fa fa-power-off"></i> Logout', array('controller'=>'users','action'=>'logout'), array('class' => 'lgot', 'escape' => false));
             }
         ?>
 		</div>

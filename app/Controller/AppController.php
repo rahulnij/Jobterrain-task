@@ -39,12 +39,15 @@ class AppController extends Controller {
         'Auth' => array(
             'loginRedirect' => array('controller'=> 'users', 'action' => 'login'),
             'logoutRedirect' => array('controller'=> 'users', 'action' => 'index'),
-            'authError' => 'Not allow to access that page.'
+            'authError' => 'Not allow to access that page.',
+            'authorize' => array('Controller'),
+            'unauthorizedRedirect' => array('controller'=> 'users', 'action' => 'index')
+            
         )
         
         );
     
-    public function isAuthoried()
+    public function isAuthorized()
     {
         return true;
     }

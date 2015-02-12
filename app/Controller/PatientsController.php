@@ -9,15 +9,15 @@ class PatientsController extends AppController
     public $components = array('GoogleApi');
     public $uses = array('Patient', 'Appointment', 'Doctor');
     
-    public function isAuthoried() {
+    public function isAuthorized() {
         
         $user = $this->Auth->user();
-        $userType = strtolower($user['User']['user_type']);
+        $userType = strtolower($user['user_type']);
         if ($userType != 'patient') {
             return false;
         }
         
-        return false;
+        return true;
     }
 
 
@@ -34,7 +34,7 @@ class PatientsController extends AppController
         ));
         
 		$user = $this->Auth->user();
-        $userId = $user['User']['id'];
+        $userId = $user['id'];
         
         $paginate = array(
             'limit' => 10,
@@ -57,7 +57,7 @@ class PatientsController extends AppController
             $currentUser = $this->Auth->user();
             $data = $this->request->data;
             
-            $data['Appointment']['patient_id'] = $currentUser['User']['id'];
+            $data['Appointment']['patient_id'] = $currentUser['id'];
             
 			if($this->Appointment->save($data)) {
 				$this->Session->setFlash(__('Your appointment has been saved.'));
