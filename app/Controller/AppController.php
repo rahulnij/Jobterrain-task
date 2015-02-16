@@ -56,6 +56,7 @@ class AppController extends Controller {
         parent::beforeFilter();
         
         $this->set('login', $this->Auth->login());
+        $this->set('currentUser', $this->Auth->user());
     }
     
   

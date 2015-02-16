@@ -36,8 +36,8 @@ class DoctorsController extends AppController
 		$user = $this->Auth->user();
         $userId = $user['id'];
         $paginate = array(
-            'limit' => 10,
-            'order' => array('Appointment.appointment_time' => 'desc'),
+            'limit' => DEFAULT_PAGE_SIZE,
+            'order' => array('Appointment.appointment_time' => 'asc'),
             
         );
         $this->Paginator->settings = $paginate;

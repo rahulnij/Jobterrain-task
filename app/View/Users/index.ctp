@@ -4,7 +4,7 @@
   function render() {
     gapi.auth.signIn({
       'callback': 'googleCallBack',
-      'accesstype': 'offline',
+      'accesstype': 'online',
       'redirecturi':'postmessage',
       'clientid': '<?php echo GOOGLE_CLIENT_ID?>',
       'cookiepolicy': 'single_host_origin',

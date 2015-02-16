@@ -19,7 +19,7 @@ class Appointment extends AppModel {
             ),
             'appointmentTimeAvailable' => array(
                 'rule'=> 'checkTimeAvailability',
-                'message' => 'Appointment time already assign to other patient.',
+                'message' => 'Appointment time already assigned to other patient.',
                 'allowEmpty' => false
             ),
             'timeChange' => array(
@@ -42,7 +42,8 @@ class Appointment extends AppModel {
                 
                 'conditions' => array(
                     'appointment_time' => $this->data[$this->name]['appointment_time'],
-                    'doctor_id' => $this->data[$this->name]['doctor_id']
+                    'doctor_id' => $this->data[$this->name]['doctor_id'],
+                    'status !=' => STATUS_UNAPPROVED
                 )
             ));
 

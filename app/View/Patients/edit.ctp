@@ -9,12 +9,12 @@
 
 ?>
 
-<h1>Change Time</h1>
+<h1>Reschedule Time</h1>
 <?php
 echo $this->Form->create('Appointment');
-echo $this->Form->input('doctor_id', array('options'=>$doctorList,'class'=>'','disabled'));
+echo $this->Form->input('doctor_id', array('label'=> 'Doctor Name &amp; ID', 'options'=>$doctorList));
 echo $this->Form->input('appointment_time', array('type'=>'text','id'=>'appointmentTime'));
-echo $this->Form->end('Change Time');
+echo $this->Form->end('Update');
 
 
 ?>

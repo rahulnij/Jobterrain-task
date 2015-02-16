@@ -14,7 +14,7 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-$siteDescription = 'Jobterrain task';
+$siteDescription = 'Jobterrain Task';
 //$cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 ?>
 <!DOCTYPE html>
@@ -40,12 +40,12 @@ $siteDescription = 'Jobterrain task';
 <body>
 	<div id="container">
 		<div id="header">
-			<h1><?php echo $this->Html->link($siteDescription, array('controller'=>'users','action'=>'index')); ?></h1>
+			<h1><?php echo $this->Html->link($siteDescription, array('controller'=>'users','action'=>'login')); ?></h1>
              <?php 
             
             if ($login == true) {
                 
-                echo $this->Html->link('<i class="fa fa-power-off"></i> Logout', array('controller'=>'users','action'=>'logout'), array('class' => 'lgot', 'escape' => false));
+                echo $this->Html->link('<b>Welcome '.$currentUser['first_name']. '</b> | <i class="fa fa-power-off"></i> Logout', array('controller'=>'users','action'=>'logout'), array('class' => 'lgot', 'escape' => false));
             }
         ?>
 		</div>

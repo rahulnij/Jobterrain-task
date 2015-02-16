@@ -768,11 +768,12 @@ pre {
 #AppointmentAddForm select,
 #AppointmentAddForm input[type="text"],
 #AppointmentEditForm label,
-#AppointmentEditForm select
+#AppointmentEditForm select,
+#AppointmentEditForm input[type="text"]
 {font: 14px Arial;color: #666;float: left;display: inline-block;clear: none;
 width: auto;padding: 3px;}
 #AppointmentAddForm label,#UserNextStepForm label,#AppointmentEditForm label{padding: 5px;}
-#AppointmentAddForm label{width: 40%;}
+#AppointmentAddForm label,#AppointmentEditForm label{width: 30%;}
 #AppointmentAddForm select,#AppointmentEditForm select{width: 35%;padding: 4px;}
 #AppointmentAddForm .input{display: inline-block;margin-top: 0;width: 100%;padding: 0;}
 .main-lbl{text-transform: uppercase;color: #000 !important;width: 12%;}

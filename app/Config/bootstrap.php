@@ -120,10 +120,11 @@ define('STATUS_APPROVED', 1);
 define('STATUS_UNAPPROVED', 2);
 define("USER_TYPE_PATIENT", 1);
 define("USER_TYPE_DOCTOR", 2);
+define("DEFAULT_PAGE_SIZE", 10);
 
 function status($statusId = null) {
     $statusId = (int)$statusId;
-    $status = array(STATUS_PENDING => 'Pending', STATUS_APPROVED => 'Approved', STATUS_UNAPPROVED => 'Un Approved');
+    $status = array(STATUS_PENDING => 'Pending', STATUS_APPROVED => 'Approved', STATUS_UNAPPROVED => 'Declined');
     if (is_int($statusId) && array_key_exists($statusId, $status)) {
         return $status[$statusId];
     }

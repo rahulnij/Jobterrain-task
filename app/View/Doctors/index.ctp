@@ -6,9 +6,9 @@
         <th><?php echo $this->Paginator->sort('Appointment.id','S.No')?></th>
         <th><?php echo $this->Paginator->sort('User.first_name','Patient Name')?></th>
         <th><?php echo $this->Paginator->sort('Appointment.appointment_time', 'Appointment Time')?></th>
-        <th><?php echo $this->Paginator->sort('Appointment.status', 'status')?></th>
+        <th><?php echo $this->Paginator->sort('Appointment.status', 'Status')?></th>
         <th><?php echo $this->Paginator->sort('Appointment.created', 'Create Date')?></th>
-        <th><?php echo $this->Paginator->sort(null, 'Schedule')?></th>
+        <th><?php echo $this->Paginator->sort(null, 'Update Status')?></th>
     </tr>
 <?php
     $i = 1;
@@ -23,7 +23,7 @@
     <td><?php echo $appointment['Appointment']['created'];?></td>
     <td><?php 
         if ($appointment['Appointment']['status'] == STATUS_PENDING) {
-            echo $this->Html->link('Schedule',   array('controller' => 'doctors', 'action' => 'edit',$appointment['Appointment']['id']));
+            echo $this->Html->link('Edit',   array('controller' => 'doctors', 'action' => 'edit',$appointment['Appointment']['id']));
         }
     
     ?>

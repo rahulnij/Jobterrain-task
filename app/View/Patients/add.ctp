@@ -9,12 +9,12 @@
 
 ?>
 
-<h1>Create Appointment</h1>
+<h1>Request Appointment</h1>
 <?php
 echo $this->Form->create('Appointment');
-echo $this->Form->input('doctor_id', array('options'=>$doctorList,'class'=>''));
+echo $this->Form->input('doctor_id', array('label'=> 'Doctor Name &amp; ID', 'options'=>$doctorList,'class'=>''));
 echo $this->Form->input('appointment_time', array('type'=>'text','id'=>'appointmentTime'));
-echo $this->Form->end('Create Appointment');
+echo $this->Form->end('Request');
 
 
 ?>

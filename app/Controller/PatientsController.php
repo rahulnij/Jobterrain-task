@@ -37,8 +37,8 @@ class PatientsController extends AppController
         $userId = $user['id'];
         
         $paginate = array(
-            'limit' => 10,
-            'order' => array('Appointment.appointment_time' => 'desc'),
+            'limit' => DEFAULT_PAGE_SIZE,
+            'order' => array('Appointment.appointment_time' => 'asc'),
             
         );
         $this->Paginator->settings = $paginate;
@@ -60,13 +60,15 @@ class PatientsController extends AppController
             $data['Appointment']['patient_id'] = $currentUser['id'];
             
 			if($this->Appointment->save($data)) {
-				$this->Session->setFlash(__('Your appointment has been saved.'));
+				$this->Session->setFlash(__('Your requested appointment has been saved.'));
                 return $this->redirect(array('action' => 'index'));
 			} 
 			$this->Session->setFlash(__('Unable to add appointment'));
 		}
         
-        $doctorList = $this->Doctor->find('list', array('fields' => array('Doctor.user_id', 'Doctor.first_name')));
+        $this->Doctor->virtualFields['name'] = 'CONCAT(Doctor.first_name, "  (", Doctor.doctor_code,")")';
+        $doctorList = $this->Doctor->find('list', array('fields' => array('Doctor.user_id', 'Doctor.name')
+            ));
         $this->set('doctorList', $doctorList);
 		
 		
@@ -91,7 +93,7 @@ class PatientsController extends AppController
             $this->request->data['Appointment']['id'] = $id;
             $this->request->data['Appointment']['status'] = STATUS_PENDING;
 	        if ($this->Appointment->save($this->request->data)) {
-	            $this->Session->setFlash(__('Your appointment has been updated.'));
+	            $this->Session->setFlash(__('Your requested appointment rescheduled.'));
 	            return $this->redirect(array('action' => 'index'));
 	        }
 	        $this->Session->setFlash(__('Unable to update your appointment.'));
@@ -101,7 +103,9 @@ class PatientsController extends AppController
 	        $this->request->data = $appointment;
 	    }
         
-        $doctorList = $this->Doctor->find('list', array('fields' => array('Doctor.user_id', 'Doctor.first_name')));
+        $this->Doctor->virtualFields['name'] = 'CONCAT(Doctor.first_name, "  (", Doctor.doctor_code,")")';
+        $doctorList = $this->Doctor->find('list', array('fields' => array('Doctor.user_id', 'Doctor.name')
+            ));
         $this->set('doctorList', $doctorList);
         
 	    $this->render('edit');

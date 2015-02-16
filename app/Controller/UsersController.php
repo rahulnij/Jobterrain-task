@@ -112,6 +112,7 @@ class UsersController extends AppController
                 $user = $this->User->read();
                 
             } else {
+                
                 $user['User']['access_token'] = $accessToken;
                 $this->User->save($user['User']);
                 $user = $this->User->read();
@@ -153,6 +154,10 @@ class UsersController extends AppController
                 case USER_TYPE_PATIENT: $this->Patient->save($data);
                                 break;
                 case USER_TYPE_DOCTOR : $this->Doctor->save($data);
+                                        $doctor = $this->Doctor->read();
+                                        $doctor['Doctor']['doctor_code'] = 'D-'.$doctor['Doctor']['id'];
+                                        
+                                        $this->Doctor->save($doctor);
                                 break;
             }
             
