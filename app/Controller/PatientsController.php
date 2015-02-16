@@ -13,7 +13,7 @@ class PatientsController extends AppController
         
         $user = $this->Auth->user();
         $userType = strtolower($user['user_type']);
-        if ($userType != 'patient') {
+        if ($userType != USER_TYPE_PATIENT) {
             return false;
         }
         
@@ -26,9 +26,9 @@ class PatientsController extends AppController
         
         $this->Appointment->bindModel(
                  array('belongsTo' => array(
-               'User' => array(
+               'Doctor' => array(
                     'className' => 'User',
-                    'foreignKey' => 'patient_id'
+                    'foreignKey' => 'doctor_id'
                  )
             )
         ));
@@ -38,7 +38,7 @@ class PatientsController extends AppController
         
         $paginate = array(
             'limit' => 10,
-            'order' => array('Appointment.appointmentTime' => 'desc'),
+            'order' => array('Appointment.appointment_time' => 'desc'),
             
         );
         $this->Paginator->settings = $paginate;
@@ -89,7 +89,7 @@ class PatientsController extends AppController
 	        
 	        $this->Appointment->id = $id;
             $this->request->data['Appointment']['id'] = $id;
-            $this->request->data['Appointment']['status'] = 'Pending';
+            $this->request->data['Appointment']['status'] = STATUS_PENDING;
 	        if ($this->Appointment->save($this->request->data)) {
 	            $this->Session->setFlash(__('Your appointment has been updated.'));
 	            return $this->redirect(array('action' => 'index'));

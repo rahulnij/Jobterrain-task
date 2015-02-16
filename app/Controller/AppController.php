@@ -38,10 +38,10 @@ class AppController extends Controller {
         'Paginator',
         'Auth' => array(
             'loginRedirect' => array('controller'=> 'users', 'action' => 'login'),
-            'logoutRedirect' => array('controller'=> 'users', 'action' => 'index'),
+            'logoutRedirect' => array('controller'=> 'users', 'action' => 'login'),
             'authError' => 'Not allow to access that page.',
             'authorize' => array('Controller'),
-            'unauthorizedRedirect' => array('controller'=> 'users', 'action' => 'index')
+            'unauthorizedRedirect' => array('controller'=> 'users', 'action' => 'login')
             
         )
         

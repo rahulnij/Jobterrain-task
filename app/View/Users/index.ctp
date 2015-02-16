@@ -9,7 +9,7 @@
       'clientid': '<?php echo GOOGLE_CLIENT_ID?>',
       'cookiepolicy': 'single_host_origin',
       'requestvisibleactions': 'http://schema.org/AddAction',
-      'scope': 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/calendar',
+      'scope': 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email',
       //'approvalprompt': 'force'
     });
   }

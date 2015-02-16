@@ -17,14 +17,15 @@ echo $this->Html->link(
         <th><?php echo $this->Paginator->sort(null, 'Change Time ')?></th>
     </tr>
 <?php
+    $i = 1;
 	foreach($appointments as $appointment) {
         
 ?>
 <tr>
-	<td>--</td>
-	<td><?php echo $appointment['User']['first_name'];?></td>
+	<td><?php echo $i++;?></td>
+	<td><?php echo $appointment['Doctor']['first_name'];?></td>
 	<td><?php echo $appointment['Appointment']['appointment_time'];?></td>
-    <td><?php echo $appointment['Appointment']['status'];?></td>
+    <td><?php echo status($appointment['Appointment']['status']);?></td>
 
     <td><?php echo $appointment['Appointment']['created'];?></td>
     <td><?php if ($appointment['Appointment']['status'] == 'UnApproved') {

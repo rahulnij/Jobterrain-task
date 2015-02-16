@@ -27,6 +27,12 @@ class Appointment extends AppModel {
                 'rule' => 'timeChange',
                 'message'=> 'Please update new time'
             )
+        ),
+        'status' => array(
+            'status' => array(
+                'rule' =>  array('inList', array(STATUS_PENDING, STATUS_APPROVED, STATUS_UNAPPROVED)),
+                'message'=> 'Status selected invalid'
+            )
         )
     );
     

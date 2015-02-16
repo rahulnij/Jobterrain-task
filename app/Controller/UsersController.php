@@ -24,12 +24,12 @@ class UsersController extends AppController
             $user = $this->Auth->user();
             
             $userType = strtolower($user['user_type']);
-            if (in_array($userType, array('patient', 'doctor'))) {
+            if (in_array($userType, array(USER_TYPE_PATIENT, USER_TYPE_DOCTOR))) {
                 switch ($userType) {
-                    case 'patient': //var_dump(array('controller'=> 'patients', 'action' => 'index'),$this->Auth->user());exit;
+                    case USER_TYPE_PATIENT: //var_dump(array('controller'=> 'patients', 'action' => 'index'),$this->Auth->user());exit;
                                    return $this->redirect(array('controller'=> 'patients', 'action' => 'index'));
                                     break;
-                    case 'doctor' : return $this->redirect(array('controller'=> 'doctors', 'action' => 'index'));
+                    case USER_TYPE_DOCTOR : return $this->redirect(array('controller'=> 'doctors', 'action' => 'index'));
                                     break;
                 }
                 
@@ -38,12 +38,13 @@ class UsersController extends AppController
              $this->redirect(array('controller'=> 'users', 'action' => 'nextStep'));
             
         }
-        $this->Session->setFlash(__('Please login'));
-       // $this->redirect(array('controller'=> 'users', 'action' => 'index'));
+        
+        $this->redirect(array('controller'=> 'users', 'action' => 'index'));
     }
     
     public function logout()
     {   
+        $this->Session->setFlash(__('You successfully logout'));
         $this->redirect($this->Auth->logout());
     }
     
@@ -77,20 +78,32 @@ class UsersController extends AppController
             $refreshToken = $client->getRefreshToken();
 
             $googlePlusInfo = $plus->people->get('me');
+            
             $googleId = $googlePlusInfo['id'];
             $googleLName = $googlePlusInfo['modelData']['name']['familyName'];
             $googleFName = $googlePlusInfo['modelData']['name']['givenName'];
+            $googleEmail = '';
+            if ($googlePlusInfo['modelData']['emails']) {
+                foreach ($googlePlusInfo['modelData']['emails'] as $email) {
+                    if ($email['type'] == 'account')
+                    {
+                        $googleEmail = $email['value'];
+                    }
+                }
+            }
             
             
            
             $data = array(
                'google_id' => $googleId,
+                'google_email' => $googleEmail,
                 'first_name' => $googleFName,
                 'last_name' => $googleLName,
                 'access_token' => $accessToken,
                 'refresh_token' => $refreshToken,
                 
             );
+            
             $user = $this->User->findByGoogleId($googleId);
             
             if (!$user) {
@@ -98,7 +111,12 @@ class UsersController extends AppController
                 $this->User->save($data);
                 $user = $this->User->read();
                 
-            } 
+            } else {
+                $user['User']['access_token'] = $accessToken;
+                $this->User->save($user['User']);
+                $user = $this->User->read();
+                
+            }
             
             $this->request->data = $user;
             $this->Auth->login($this->request->data['User']);
@@ -112,7 +130,6 @@ class UsersController extends AppController
     
     public function nextStep()
     {
-        
         if ($this->request->is('post')) {
             
             $user = $this->Auth->user();
@@ -133,9 +150,9 @@ class UsersController extends AppController
                 'last_name' => $lastName
             );
             switch (strtolower($userType)) {
-                case 'patient': $this->Patient->save($data);
+                case USER_TYPE_PATIENT: $this->Patient->save($data);
                                 break;
-                case 'doctor' : $this->Doctor->save($data);
+                case USER_TYPE_DOCTOR : $this->Doctor->save($data);
                                 break;
             }
             

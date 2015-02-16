@@ -5,6 +5,7 @@ class GoogleApiComponent extends Component
 {
    
    private $client = null;
+   
    public function __construct(\ComponentCollection $collection, $settings = array()) {
        parent::__construct($collection, $settings);
        
@@ -20,18 +21,19 @@ class GoogleApiComponent extends Component
         //$googleClient->s
     }
     
-    private function getCalandarService()
+    private function getCalendarService()
     {
         // have to change to get all time one instance instead of creating every time
        $this->client->addScope('https://www.googleapis.com/auth/calendar');
        $service = new Google_Service_Calendar($this->client);
        return $service;
     }
-    public function createCalandar(Array $data)
+    public function createCalendar(Array $data)
     {
         
-        $service = $this->getCalandarService();
+        $service = $this->getCalendarService();
         $accessToken = $data['accessToken'];
+        
         $this->client->setAccessToken($accessToken);
         
         $calendar = new Google_Service_Calendar_Calendar();
@@ -42,7 +44,7 @@ class GoogleApiComponent extends Component
         
     }
     
-    public function isCalendarExist($calandarId)
+    public function isCalendarExist($calendarId)
     {
         return true;
     }
@@ -52,26 +54,29 @@ class GoogleApiComponent extends Component
     
         $event = new Google_Service_Calendar_Event();
         
-        $event->setSummary('Appointment');
-        $event->setLocation('Somewhere');
+        $summary = $data['summary'];
+        $startTime = $data['startTime'];
+        $endTime = $data['endTime'];
+        $calendarId = $data['calendarId'];
+        $event->setSummary($summary);
+        //$event->setLocation('Somewhere');
         $start = new Google_Service_Calendar_EventDateTime();
-        $start->setDateTime('2015-06-03T10:00:00.000-07:00');
+        $start->setDateTime($startTime);//'2015-06-03T10:00:00.000-07:00'
         $event->setStart($start);
         $end = new Google_Service_Calendar_EventDateTime();
-        $end->setDateTime('2015-06-03T10:25:00.000-07:00');
+        $end->setDateTime($endTime);
         $event->setEnd($end);
-        $attendee1 = new Google_Service_Calendar_EventAttendee();
-        $attendee1->setEmail('attendeeEmail');
         
-        $attendees = array($attendee1,
-                          
-                          );
-        $event->attendees = $attendees;
-        $service = $this->getCalandarService();
-        $createdEvent = $service->events->insert('primary', $event);
+        $service = $this->getCalendarService();
+        $createdEvent = $service->events->insert($calendarId, $event);
 
         return $createdEvent->getId();
         
+    }
+    
+    public function setAccessToken($accessToken)
+    {
+        $this->client->setAccessToken($accessToken);
     }
     
 }

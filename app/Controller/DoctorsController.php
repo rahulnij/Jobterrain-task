@@ -14,7 +14,7 @@ class DoctorsController extends AppController
         parent::isAuthorized();
         $user = $this->Auth->user();
         $userType = strtolower($user['user_type']);
-        if ($userType != 'doctor') {
+        if ($userType != USER_TYPE_DOCTOR) {
             return false;
         }
         
@@ -37,7 +37,7 @@ class DoctorsController extends AppController
         $userId = $user['id'];
         $paginate = array(
             'limit' => 10,
-            'order' => array('Appointment.appointmentTime' => 'desc'),
+            'order' => array('Appointment.appointment_time' => 'desc'),
             
         );
         $this->Paginator->settings = $paginate;
@@ -57,16 +57,21 @@ class DoctorsController extends AppController
 	    }
 
 	    $appointment = $this->Appointment->findById($id);
+        
 	    if (!$appointment) {
 	        throw new NotFoundException(__('Invalid appointment'));
 	    }
-
+        
+        if ($appointment['Appointment']['status'] == STATUS_APPROVED) {
+            $this->redirect(array('controller' => 'doctors', 'action'=> 'index'));
+        }
+        
 	    if ($this->request->is(array('post', 'put'))) {
 	        
 	        $this->Appointment->id = $id;
 	        if ($this->Appointment->save($this->request->data)) {
-                if ($this->request->data['Appointment']['status'] == 'Approved') {
-                    $this->googlEvent($id);
+                if ($this->request->data['Appointment']['status'] == STATUS_APPROVED) {
+                    $this->googleEvent($id);
                 }
 	            $this->Session->setFlash(__('Your appointment has been updated.'));
 	            return $this->redirect(array('action' => 'index'));
@@ -86,24 +91,61 @@ class DoctorsController extends AppController
      */
     public function googleEvent($appointmentId)
     {
-        $calandarId = $this->Auth->user('calandar_id');
+        $this->Appointment->bindModel(
+                 array('belongsTo' => array(
+                 'Patient' => array(
+                    'className' => 'User',
+                    'foreignKey' => 'patient_id'
+                 ),
+                'Doctor' => array(
+                    'className' => 'User',
+                    'foreignKey' => 'doctor_id'
+                 )
+            )
+        ));
         
-        // create calandar not exist both in user account here or on google.
-        if (is_null($calandarId) || $this->GoogleApi->isCalendarExist()) {
-            $data['summary'] = 'Job terrain task';
-            $data['accessToken'] = $this->Auth->user('access_token');
-            $calandarId = $this->GoogleApi->createCalandar($data);
-            // update current user calandar id
-            $user = $this->Auth->user();
-            $user['calandar_id'] = $calandarId;
-            $this->User->save($user);
-            // udating current auth data
-            $this->Auth->user($user);
+        $appointment = $this->Appointment->read(null, $appointmentId);
+        $patient = $appointment['Patient'];
+        $doctor = $appointment['Doctor'];
+        
+        
+        
+        $appointmentTime = new DateTime($appointment['Appointment']['appointment_time']);
+        $patientName = $appointment['Patient']['first_name'];
+        $doctorName = $appointment['Patient']['first_name'];
+        $patient['summary'] = 'Appointment With '. $patientName;
+        $doctor['summary'] = 'Appointment With '. $doctorName;
+        $users[] = $patient;
+        $users[] = $doctor;
+        
+        foreach ($users as $user ) {
+            // create calendar not exist both in user account here or on google.
+            if (is_null($user['calendar_id']) || $this->GoogleApi->isCalendarExist($user['calendar_id']) === false) {
+                $data['summary'] = 'Job terrain task';
+                $data['accessToken'] = $user['access_token'];
+                $calendarId = $this->GoogleApi->createCalendar($data);
+                // update current user calendar id
+
+                $user['calendar_id'] = $calendarId;
+                $this->User->save($user);
+
+            }
+            
+            
+
+            $eventData = array(
+                'summary' => $user['summary'],
+                'startTime' => $appointmentTime->format(DateTime::RFC3339),
+                'endTime' => $appointmentTime->format(DateTime::RFC3339),
+                'calendarId' => $user['calendar_id']
+            );
+            
+            $this->GoogleApi->setAccessToken($user['access_token']);
+            $this->GoogleApi->createEvent($eventData);
+            
         }
         
-     
-     
-        //$googleClient->s
+        
     }
     
     

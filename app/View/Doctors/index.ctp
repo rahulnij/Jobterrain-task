@@ -8,21 +8,22 @@
         <th><?php echo $this->Paginator->sort('Appointment.appointment_time', 'Appointment Time')?></th>
         <th><?php echo $this->Paginator->sort('Appointment.status', 'status')?></th>
         <th><?php echo $this->Paginator->sort('Appointment.created', 'Create Date')?></th>
-        <th></th>
+        <th><?php echo $this->Paginator->sort(null, 'Schedule')?></th>
     </tr>
 <?php
+    $i = 1;
 	foreach($appointments as $appointment) {
         
 ?>
 <tr>
-	<td>--</td>
+	<td><?php echo $i++;?></td>
 	<td><?php echo $appointment['User']['first_name'];?></td>
 	<td><?php echo $appointment['Appointment']['appointment_time'];?></td>
-    <td><?php echo $appointment['Appointment']['status'];?></td>
+    <td><?php echo status($appointment['Appointment']['status']);?></td>
     <td><?php echo $appointment['Appointment']['created'];?></td>
     <td><?php 
-        if ($appointment['Appointment']['status'] == 'Pending') {
-            echo $this->Html->link('Change',   array('controller' => 'doctors', 'action' => 'edit',$appointment['Appointment']['id']));
+        if ($appointment['Appointment']['status'] == STATUS_PENDING) {
+            echo $this->Html->link('Schedule',   array('controller' => 'doctors', 'action' => 'edit',$appointment['Appointment']['id']));
         }
     
     ?>
